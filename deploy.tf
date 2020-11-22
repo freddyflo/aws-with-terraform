@@ -134,7 +134,7 @@ resource "tls_private_key" "test_key" {
 
 resource "aws_key_pair" "generated_key" {
   key_name   = "fred-key"
-  #public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDB6yRGs2Y0Jn2Po8gG6gR8NgeEDq6fBgWchUZRcEgdhqEgm7FOSfVJto2egzk/yPQchp20WMMx8SOleU0EOCG/xT772EXY+abBfbFnLOByAkKK0eQYKrdWn9ZObefcMKVEOyifpaEhaKI6yuXYGispKI14OPQrhP+UV0Bo4yoZ5xkTlFg12rY7E+KkkJS54xLKouGmSncSTQ1AIIrAOOfy6pWKDZJbS9qdPfSljwNL7+XRkvq1Bm7YCu2hsfGw35QN1RPqbTtbho+u01v9uJFV2nMCCRxv/C2GZx1Z+HKp8gu7YfdTD8YcjToLemQEUnDjv3yQeN8o55/hE7HRok/9 fred@fred-ThinkPad-P43s"
+  #public_key = ""
   public_key = tls_private_key.test_key.public_key_openssh
 }
 
