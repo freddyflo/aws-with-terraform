@@ -175,6 +175,77 @@ output "instance_ip" {
   value       = aws_instance.web.public_ip
 }
 
-# subnet - availability zone
+output "load-balancer-arn" {
+  description = "Load balancer Amazon Resource Name"
+  value       = aws_lb_listener.front_end.load_balancer_arn
+}
+
+
+# Application Load Balancer
+resource "aws_lb" "test_alb" {
+  name               = "test-lb-tf"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.ssh_web.id]
+  subnets            = data.aws_subnet.test_subnet.*.id
+  
+
+   
+  # enable_deletion_protection = false
+
+ # access_logs {
+   # bucket  = aws_s3_bucket.thebucketofaklamanu.bucket
+   # prefix  = "test-lb"
+   # enabled = true
+ # }
+
+  tags = {
+    Environment = "test-env"
+  }
+}
+
+
+# subnets ids
+variable "vpc_id" {}
+
+ data "aws_subnet_ids" "test_subnet_ids" {
+   vpc_id = var.vpc_id
+ }
+
+data "aws_subnet" "test_subnet" {
+  count = "${length(data.aws_subnet_ids.test_subnet_ids.ids)}"
+  id    = "${tolist(data.aws_subnet_ids.test_subnet_ids.ids)[count.index]}"
+}
+
+# listener
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.test_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {    
+    target_group_arn = aws_lb_target_group.test.arn
+    type             = "forward"  
+  }
+
+}
+
+# target group
+resource "aws_lb_target_group" "test" {
+  name     = "tf-example-lb-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_default_vpc.default.id
+}
+
+# target group attachment
+resource "aws_lb_target_group_attachment" "test" {
+  target_group_arn = aws_lb_target_group.test.arn
+  target_id        = aws_instance.web.id
+  port             = 80
+}
+
+
+
 
 
