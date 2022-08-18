@@ -1,7 +1,3 @@
-provider aws {
-    region =  "eu-west-3"
-}
-
 
 resource "aws_s3_bucket" "dev_bucket" {
   bucket = "faklamanu-tf-test-bucket"
